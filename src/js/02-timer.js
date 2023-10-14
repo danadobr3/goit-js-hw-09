@@ -2,6 +2,7 @@ import flatpickr from "flatpickr";
 // Додатковий імпорт стилів
 import "flatpickr/dist/flatpickr.min.css";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { convertMs } from './helpers';
 
 function getRef(selector) {
   return document.querySelector(selector);
