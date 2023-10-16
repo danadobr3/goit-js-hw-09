@@ -7,10 +7,7 @@ function getRef(selector) {
 }
 
 function addLeadingZero(value) {
-  if (value < 10) {
-    return `0${value}`;
-  }
-  return value.toString();
+  return String(value).padStart(2, '0');
 }
 
 const imputDatePickerRef = getRef('#datetime-picker');
