@@ -1,8 +1,6 @@
 import flatpickr from "flatpickr";
-// Додатковий імпорт стилів
 import "flatpickr/dist/flatpickr.min.css";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { convertMs } from './helpers';
 
 function getRef(selector) {
   return document.querySelector(selector);
@@ -24,7 +22,7 @@ const secondsRef = getRef('[data-seconds]');
 
 let timeDifference = 0;
 let timerId = null;
-let formatDate = null;
+let formatDate = { days: 0, hours: 0, minutes: 0, seconds: 0 }; 
 
 const options = {
   enableTime: true,
@@ -32,8 +30,7 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-      console.log(selectedDates[0]);
-      currentDifferenceDate(selectedDates[0]);
+    currentDifferenceDate(selectedDates[0]);
   },
 };
 
@@ -46,10 +43,8 @@ btnStartRef.addEventListener('click', onBtnStart);
 window.addEventListener('keydown', e => {
   if (e.code === 'Escape' && timerId) {
     clearInterval(timerId);
-
     imputDatePickerRef.removeAttribute('disabled');
     btnStartRef.setAttribute('disabled', true);
-
     secondsRef.textContent = '00';
     minutesRef.textContent = '00';
     hoursRef.textContent = '00';
@@ -66,7 +61,8 @@ function currentDifferenceDate(selectedDates) {
 
   if (selectedDates < currentDate) {
     btnStartRef.setAttribute('disabled', true);
-    return Notify.failure('Please choose a date in the future');
+    Notify.failure('Please choose a date in the future');
+    return;
   }
 
   timeDifference = selectedDates.getTime() - currentDate;
@@ -96,4 +92,22 @@ function renderDate(formatDate) {
   minutesRef.textContent = addLeadingZero(formatDate.minutes);
   hoursRef.textContent = addLeadingZero(formatDate.hours);
   daysRef.textContent = addLeadingZero(formatDate.days);
+}
+
+ function convertMs(ms) {
+  
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
+
+  const days = Math.floor(ms / day);
+  
+  const hours = Math.floor((ms % day) / hour);
+  
+  const minutes = Math.floor(((ms % day) % hour) / minute);
+  
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+
+  return { days, hours, minutes, seconds };
 }
