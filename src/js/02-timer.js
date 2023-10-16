@@ -1,13 +1,9 @@
 import flatpickr from "flatpickr";
-// Додатковий імпорт стилів
 import "flatpickr/dist/flatpickr.min.css";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { convertMs } from './helpers';
 
-function getRef(selector) {
-  return document.querySelector(selector);
-}
-
+let getRef = selector => document.querySelector(selector);
 const imputDatePickerRef = getRef('#datetime-picker');
 const btnStartRef = getRef('[data-start]');
 const daysRef = getRef('[data-days]');
@@ -25,8 +21,8 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-      console.log(selectedDates[0]);
-      currentDifferenceDate(selectedDates[0]);
+    console.log(selectedDates[0]);
+    currentDifferenceDate(selectedDates[0]);
   },
 };
 
@@ -36,8 +32,8 @@ flatpickr(imputDatePickerRef, options);
 
 btnStartRef.addEventListener('click', onBtnStart);
 
-window.addEventListener('keydown', e => {
-  if (e.code === 'Escape' && timerId) {
+window.addEventListener('keydown', evt => {
+  if (evt.code === 'Escape' && timerId) {
     clearInterval(timerId);
 
     imputDatePickerRef.removeAttribute('disabled');
@@ -75,7 +71,7 @@ function startTimer() {
 
   timeDifference -= 1000;
 
-  if (formatDate.seconds <= 0 && formatDate.minutes <= 0) {
+  if (secondsRef.textContent <= 0 && minutesRef.textContent <= 0) {
     Notify.success('Time end');
     clearInterval(timerId);
   } else {
@@ -85,12 +81,12 @@ function startTimer() {
 }
 
 function renderDate(formatDate) {
-  secondsRef.textContent = formatDate.seconds;
-  minutesRef.textContent = formatDate.minutes;
-  hoursRef.textContent = formatDate.hours;
-  daysRef.textContent = formatDate.days;
+  secondsRef.textContent = addLeadingZero(formatDate.seconds);
+  minutesRef.textContent = addLeadingZero(formatDate.minutes);
+  hoursRef.textContent = addLeadingZero(formatDate.hours);
+  daysRef.textContent = addLeadingZero(formatDate.days);
 }
 
-function getRef(selector) {
-  return document.querySelector(selector);
+function addLeadingZero(value) {
+  return value < 10 ? `0${value}` : value;
 }
